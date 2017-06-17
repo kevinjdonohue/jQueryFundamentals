@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <title>jQuery Test Page</title>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="jquery_fundamentals.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                
+                $.ajax({
+                    url: 'http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&q=http%3A%2F%2Fnews.google.com%2Fnews%3Foutput%3Drss%26num%3D8%20',
+                    type: 'GET',
+                    dataType: 'jsonp'
+                })
+                    .done(function(data) { successHandler(data); })
+                    .fail(function(xhr, status, error) { errorHandler(xhr, status, error); })
+
+                function successHandler(data){
+                    $('#newsfeedTitle').html(data.responseData.feed.title);
+                    var entries = data.responseData.feed.entries;
+                    var articles = $('#newsfeedArticles');
+                    
+                    $(entries).each(function(number, element) {
+                        articles.append('<div id="newsfeedArticle' + number + '"><div id="newsfeedArticleTitle' + number + '" class="NewsfeedArticleTitle">' + element.title + '</div>');                             
+                        articles.append('<div id="newsfeedArticleContentSnippet' + number + '" class="NewsfeedArticleContentSnippet"><a href="' + element.link + '">' + element.contentSnippet + '</a></div></div>');
+                    });
+                    
+                    
+                }
+                
+                function errorHandler(xhr, status, error) {
+                    alert('Status: ' + status);
+                }
+                
+                
+                $('#newsfeedArticles').on('click', 'div[id^="newsfeedArticleTitle"]', 
+                    function(event) {    
+                        var targetId = $(event.target).attr('id');                        
+                        var index = targetId.substring(targetId.length - 1);
+                        var snippet = $('#newsfeedArticleContentSnippet' + index);
+                        if(snippet.css('display') === 'none') {                        
+                            snippet.css('display', 'inline');
+                        } else {
+                            snippet.css('display', 'none');
+                        }
+                    });
+                
+            });
+        </script>
+        <link id="mainStyles" rel="stylesheet" type="text/css" href="jquery_fundamentals.css"/> 
+    </head>
+    <body>
+<!--        <h1 id="myTitle" class="PageTitle">jQuery Test Page</h1>-->
+<!--        <input id="getNewsButton" class="Input" type="button" name="Get News" value="Get News!"/>-->
+        
+        <div id="newsfeedContent">
+            <div id="newsfeedTitle" class="NewsfeedTitle"></div>
+            <div id="newsfeedArticles"></div>
+        </div>        
+<!--
+        <div id="myContent">
+            <div id="firstName" class="InputDiv">
+                <label id="firstNameLabel" class="InputLabel">First Name:</label>
+                <input id="firstNameInput" class="Input" type="text" name="fName" placeholder="First Name"/>
+            </div>
+            <div id="lastName" class="InputDiv">
+                <label id="lastNameLabel" class="InputLabel">Last Name:</label>
+                <input id="lastNameInput" class="Input" type="text" name="lName" placeholder="Last Name"/> 
+            </div>
+            <div id="Submit">
+                <input id="submitButton" class="Input" type="submit" name="submit" value="submit"/>                
+            </div>
+        </div>
+-->
+        
+<!--
+        <table id="customers">
+            <tr>
+                <td>John</td>
+                <td>Doe</td>
+            </tr>
+            <tr>
+                <td>Sally</td>
+                <td>Doe</td>
+            </tr>
+        </table>
+-->
+    </body>
+</html>
